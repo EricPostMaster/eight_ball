@@ -12,7 +12,7 @@ document.getElementById("shakeButton").addEventListener("click", shakeBall);
 
 // Shake detection variables
 let lastX = 0, lastY = 0, lastZ = 0, lastTime = 0;
-const SHAKE_THRESHOLD = 15;  // Adjust sensitivity as needed
+const SHAKE_THRESHOLD = 1;  // Adjust sensitivity as needed
 
 // Function to shake ball and show answer
 function shakeBall() {
