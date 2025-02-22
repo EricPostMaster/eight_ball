@@ -16,6 +16,7 @@ const SHAKE_THRESHOLD = 1;  // Adjust sensitivity as needed
 
 // Function to shake ball and show answer
 function shakeBall() {
+    console.log("shake activated")
     ball.classList.add("shake");
     setTimeout(() => {
         ball.classList.remove("shake");
