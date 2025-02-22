@@ -6,17 +6,17 @@ const answers = [
 
 const ball = document.getElementById("magicBall");
 const answerText = document.getElementById("answer");
+const shakeButton = document.getElementById("shakeButton");
 
 // Button click event
-document.getElementById("shakeButton").addEventListener("click", shakeBall);
+shakeButton.addEventListener("click", shakeBall);
 
 // Shake detection variables
 let lastX = 0, lastY = 0, lastZ = 0, lastTime = 0;
-const SHAKE_THRESHOLD = 1;  // Adjust sensitivity as needed
+const SHAKE_THRESHOLD = 15;  
 
 // Function to shake ball and show answer
 function shakeBall() {
-    console.log("shake activated")
     ball.classList.add("shake");
     setTimeout(() => {
         ball.classList.remove("shake");
@@ -25,26 +25,37 @@ function shakeBall() {
     }, 500);
 }
 
-window.addEventListener("devicemotion", (event) => {
+// Function to start motion tracking with permission
+function startMotionTracking() {
+    if (typeof DeviceMotionEvent.requestPermission === "function") {
+        DeviceMotionEvent.requestPermission()
+            .then((permissionState) => {
+                if (permissionState === "granted") {
+                    window.addEventListener("devicemotion", handleMotion);
+                } else {
+                    alert("Motion access denied. Shake detection won't work.");
+                }
+            })
+            .catch(console.error);
+    } else {
+        // Non-iOS devices (Android, etc.) don’t need permission
+        window.addEventListener("devicemotion", handleMotion);
+    }
+}
+
+// Motion event handler
+function handleMotion(event) {
     const acceleration = event.accelerationIncludingGravity;
     if (!acceleration) return;
 
-    console.log("Acceleration:", acceleration);
-
     const currentTime = new Date().getTime();
-    if ((currentTime - lastTime) > 100) {  // Limit event firing rate
+    if ((currentTime - lastTime) > 100) {
         let deltaX = Math.abs(acceleration.x - lastX);
         let deltaY = Math.abs(acceleration.y - lastY);
         let deltaZ = Math.abs(acceleration.z - lastZ);
-
-        console.log("DeltaX:", deltaX, "DeltaY:", deltaY, "DeltaZ:", deltaZ);
-
         let speed = deltaX + deltaY + deltaZ;
 
-        console.log("Speed:", speed);
-
         if (speed > SHAKE_THRESHOLD) {
-            console.log("Shake detected");
             shakeBall();
         }
 
@@ -53,4 +64,7 @@ window.addEventListener("devicemotion", (event) => {
         lastZ = acceleration.z;
         lastTime = currentTime;
     }
-});
+}
+
+// Add event listener to request permission when user interacts with the page
+document.body.addEventListener("click", startMotionTracking, { once: true });
