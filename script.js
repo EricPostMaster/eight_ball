@@ -24,10 +24,11 @@ function shakeBall() {
     }, 500);
 }
 
-// Device motion event listener
 window.addEventListener("devicemotion", (event) => {
     const acceleration = event.accelerationIncludingGravity;
     if (!acceleration) return;
+
+    console.log("Acceleration:", acceleration);
 
     const currentTime = new Date().getTime();
     if ((currentTime - lastTime) > 100) {  // Limit event firing rate
@@ -35,9 +36,14 @@ window.addEventListener("devicemotion", (event) => {
         let deltaY = Math.abs(acceleration.y - lastY);
         let deltaZ = Math.abs(acceleration.z - lastZ);
 
+        console.log("DeltaX:", deltaX, "DeltaY:", deltaY, "DeltaZ:", deltaZ);
+
         let speed = deltaX + deltaY + deltaZ;
 
+        console.log("Speed:", speed);
+
         if (speed > SHAKE_THRESHOLD) {
+            console.log("Shake detected");
             shakeBall();
         }
 
